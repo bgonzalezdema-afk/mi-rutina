@@ -17,30 +17,6 @@ try{var raw=localStorage.getItem(key);if(raw){var parsed=JSON.parse(raw);if(pars
 if(!db.draft)db.draft={};if(!Array.isArray(db.history))db.history=[];if(!Array.isArray(db.weights))db.weights=[];
 function numeric(v){return Number(String(v===undefined?"":v).trim().replace(",","."))}
 function persist(){try{localStorage.setItem(key,JSON.stringify(db));return true}catch(e){alert('No se pudo guardar en este visor. Exporta un respaldo.');return false}}
-// Botones decimales para teclados iOS que no muestran separador.
-function addDecimalButtons(){
- var inputs=[].slice.call(document.querySelectorAll('input[data-field="kg"], #bodykg'));
- inputs.forEach(function(inp){
-  inp.setAttribute('inputmode','decimal');
-  inp.setAttribute('autocomplete','off');
-  var b=document.createElement('button');b.type='button';b.textContent=',5';
-  b.setAttribute('aria-label','Agregar medio kilo');
-  b.style.cssText='font-size:13px;padding:6px 8px;margin-top:3px;border:1px solid #b8c7ce;border-radius:7px;background:#e9f2f6;color:#17384b;cursor:pointer;min-height:30px';
-  b.addEventListener('click',function(){
-   var v=String(inp.value||'').trim();
-   if(!v)v='0';
-   if(/[.,]/.test(v)){
-    var n=Number(v.replace(',','.'));
-    if(Number.isFinite(n))v=String(n+0.5).replace('.',',');
-   }else v=v+',5';
-   inp.value=v;
-   inp.dispatchEvent(new Event('input',{bubbles:true}));
-  });
-  var wrapper=document.createElement('span');wrapper.style.cssText='display:flex;flex-direction:column;min-width:0';
-  inp.parentNode.insertBefore(wrapper,inp);wrapper.appendChild(inp);wrapper.appendChild(b);
- });
-}
-addDecimalButtons();
 var fields=[].slice.call(document.querySelectorAll('[data-field]'));
 function fieldKey(el){return [el.getAttribute('data-day'),el.getAttribute('data-ex')||'run',el.getAttribute('data-series')||'0',el.getAttribute('data-field')].join('|')}
 function setField(el,val){if(el.type==='checkbox')el.checked=!!val;else el.value=(val===undefined||val===null)?'':val}
